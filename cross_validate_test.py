@@ -101,12 +101,12 @@ def k_fold_train(
     ])
 
     dataset = BinaryImageFolderDataset(data_root, transform=transform)
-    kfold = KFold(n_splits=k, shuffle=True, random_state=69420)
+    kfold = KFold(n_splits=k, shuffle=True, random_state=123)
 
     fold_accuracies = []
 
     for fold, (train_idx, test_idx) in enumerate(kfold.split(dataset)):
-        print(f"\n===== Fold {fold + 1}/{k} =====")
+        print(f"\n Fold {fold + 1}/{k} ")
 
         train_subset = Subset(dataset, train_idx)
         test_subset = Subset(dataset, test_idx)
@@ -121,7 +121,6 @@ def k_fold_train(
         model.fc = nn.Linear(model.fc.in_features, 2)
         model = model.to(device)
 
-        # Train ALL weights
         optimizer = optim.Adam(model.parameters(), lr=lr)
         criterion = nn.CrossEntropyLoss()
 
@@ -137,7 +136,7 @@ def k_fold_train(
     avg_acc = np.mean(fold_accuracies)
     std_acc = np.std(fold_accuracies)
 
-    print("\n===== Cross-Validation Result =====")
+    print("\n Cross-Validation Result:")
     print(f"Average Accuracy: {avg_acc:.4f}")
     print(f"Std Accuracy: {std_acc:.4f}")
 
