@@ -26,7 +26,7 @@ def train_and_save_model(
     dataset = BinaryImageFolderDataset(data_root, transform=transform)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-    model = models.resnet18(pretrained=True) #The base network
+    model = models.resnet152(pretrained=True) #The base network
 
     # Replace final layer for binary classification
     model.fc = nn.Linear(model.fc.in_features, 2)
