@@ -5,3 +5,4 @@ hist_matched_dataset
 __pycache__
 model/__pycache__
 model/final_model.pth
+build

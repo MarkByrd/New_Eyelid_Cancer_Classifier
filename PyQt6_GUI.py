@@ -10,18 +10,31 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 # --- MODEL LOADING ---
 def load_model(weights_path="model/final_model.pth", device="cpu"):
     model_arch = models.resnet152(weights=None)
     model_arch.fc = nn.Linear(model_arch.fc.in_features, 2)
     if os.path.exists(weights_path):
         model_arch.load_state_dict(torch.load(weights_path, map_location=device))
+    else:
+        print("MODEL FAILED TO LOAD: DO NOT USE SOFTWARE")
     model_arch.to(device)
     model_arch.eval()
     return model_arch
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = load_model(device=DEVICE)
+PATH = resource_path("model/final_model.pth")
+MODEL = load_model(weights_path = PATH, device=DEVICE)
 PREPROCESS = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
